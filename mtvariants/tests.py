@@ -61,16 +61,30 @@ class EntryQueriesTestCase(unittest.TestCase):
         self.assert_(self.e_b in result)
         self.assert_(self.e_c in result)
 
+        #new_poly = Polymorphism(position=1, insert=0, value='G', reference='A')
+        #result = Entry.objects.with_polymorphism(new_poly)
+        #self.assert_(self.e_d in result)
+
     def testNotPolymorphism(self):
         """Find all entries having polymorphism X but not polymorphism Y"""
         result = Entry.objects.with_polymorphism(self.p2).not_polymorphism(self.p4)
         self.assert_(self.e_b in result)
         self.assert_(self.e_c not in result)
 
-    def testWithOnlyPolymorphism(self):
+    def testWithOnlyPolymorphisms(self):
         """Find all entries having only polymorphism X"""
-        result = Entry.objects.only_polymorphism(self.p2)
+        result = Entry.objects.only_polymorphisms(self.p2)
         self.assertEquals(len(result), 0, result)
+
+        result = Entry.objects.only_polymorphisms([self.p2, self.p3])
+        self.assertEquals(len(result), 1)
+        self.assert_(self.e_b in result)
+
+        new_poly = Polymorphism(position=1, insert=0, value='G', reference='A')
+        result = Entry.objects.only_polymorphisms(new_poly)
+        self.assertEquals(len(result), 1)
+        self.assert_(self.e_d in result)
+
 
     def testInRange(self):
         """Find all entries covering positions A-B"""

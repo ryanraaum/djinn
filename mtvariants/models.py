@@ -96,31 +96,43 @@ class Entry(models.Model):
                     return self.none()
             return self.filter(sequences__polymorphisms__id = p.id)
 
-        def only_polymorphism(self, p):
-            if not isinstance(p, Polymorphism):
-                raise TypeError, "argument must be a Polymorphism instance"
-            if p.id is None:
-                try:
-                    p = Polymorphism.objects.get({'position'  :p.position, 
-                                                  'insert'    :p.insert,
-                                                  'value'     :p.value,
-                                                  'reference' :p.reference})
-                except ObjectDoesNotExist:
-                    # if polymorphism is not in the db, exclude everything
-                    # if the polymorphism is not in the db, no sequence has it
-                    return self.none()
+        def only_polymorphisms(self, polys):
+            # accept either collection or single object,
+            # first, if the argument is not a collection, make it a list
+            if not hasattr(polys, '__contains__'):
+                polys = [polys]
+            # make sure that all the arguments are Polymorphisms
+            for p in polys:
+                if not isinstance(p, Polymorphism):
+                    raise TypeError, "argument must be a Polymorphism instance"
+            for p in polys:
+                if p.id is None:
+                    try:
+                        x = Polymorphism.objects.get(position   = p.position, 
+                                                     insert     = p.insert,
+                                                     value      = p.value,
+                                                     reference  = p.reference)
+                        p.id = x.id
+                    except ObjectDoesNotExist:
+                        # if polymorphism is not in the db, don't bother searching
+                        # for it
+                        polys.remove(p)
+            if len(polys) == 0:
+                return self.none()
             # all object primary id's are auto-generated and sequential,
             # so the list of all primary keys is just 1 to total number
             # (+1 in the python range construct)
             other_poly_ids = list(x['id'] for x in Polymorphism.objects.values('id'))
-            # remove the id that I want
-            if p.id in other_poly_ids:
-                other_poly_ids.remove(p.id)
+            # remove the ids that I want
+            for p in polys:
+                if p.id in other_poly_ids:
+                    other_poly_ids.remove(p.id)
 
+            desired_poly_ids = list(p.id for p in polys)
             # first, must have the polymorphim given
-            qset = self.filter(sequences__polymorphisms__id = p.id)
+            qset = self.filter(sequences__polymorphisms__in = desired_poly_ids)
             # then exclude sequences with any other polymorphisms
-            return qset.exclude(sequences__polymorphisms__in = other_poly_ids)
+            return qset.exclude(sequences__polymorphisms__in = other_poly_ids).distinct()
 
         def not_polymorphism(self, p):
             if not isinstance(p, Polymorphism):
