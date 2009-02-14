@@ -81,22 +81,8 @@ class Entry(models.Model):
         
     class QuerySet(QuerySet):
     
-        def with_polymorphism(self, p):
-            if not isinstance(p, Polymorphism):
-                raise TypeError, "argument must be a Polymorphism instance"
-            if p.id is None:
-                try:
-                    p = Polymorphism.objects.get({'position'  :p.position, 
-                                                  'insert'    :p.insert,
-                                                  'value'     :p.value,
-                                                  'reference' :p.reference})
-                except ObjectDoesNotExist:
-                    # if polymorphism is not in the db, exclude everything
-                    # if the polymorphism is not in the db, no sequence has it
-                    return self.none()
-            return self.filter(sequences__polymorphisms__id = p.id)
-
-        def only_polymorphisms(self, polys):
+        @staticmethod
+        def __validate_polys__(polys):
             # accept either collection or single object,
             # first, if the argument is not a collection, make it a list
             if not hasattr(polys, '__contains__'):
@@ -117,6 +103,17 @@ class Entry(models.Model):
                         # if polymorphism is not in the db, don't bother searching
                         # for it
                         polys.remove(p)
+            return polys
+
+        def with_polymorphisms(self, polys):
+            polys = self.__validate_polys__(polys)
+            if len(polys) == 0:
+                return self.none()
+            poly_ids = list(p.id for p in polys)
+            return self.filter(sequences__polymorphisms__in = poly_ids)
+
+        def only_polymorphisms(self, polys):
+            polys = self.__validate_polys__(polys)
             if len(polys) == 0:
                 return self.none()
             # all object primary id's are auto-generated and sequential,
@@ -134,20 +131,12 @@ class Entry(models.Model):
             # then exclude sequences with any other polymorphisms
             return qset.exclude(sequences__polymorphisms__in = other_poly_ids).distinct()
 
-        def not_polymorphism(self, p):
-            if not isinstance(p, Polymorphism):
-                raise TypeError, "argument must be a Polymorphism instance"
-            if p.id is None:
-                try:
-                    p = Polymorphism.objects.get({'position'  :p.position, 
-                                                  'insert'    :p.insert,
-                                                  'value'     :p.value,
-                                                  'reference' :p.reference})
-                except ObjectDoesNotExist:
-                    # if polymorphism is not in the db, just return the entering QuerySet
-                    # if the polymorphism is not in the db, no sequence has it
-                    return self
-            return self.exclude(sequences__polymorphisms__id = p.id)
+        def not_polymorphisms(self, polys):
+            polys = self.__validate_polys__(polys)
+            if len(polys) == 0:
+                return self.all()
+            poly_ids = list(p.id for p in polys)
+            return self.exclude(sequences__polymorphisms__in = poly_ids)
             
         def in_range(self, start, end):
             if not all([isinstance(start, IntType), isinstance(end, IntType)]):
@@ -167,45 +156,6 @@ class Sequence(models.Model):
     polymorphisms   = models.ManyToManyField(Polymorphism, related_name='sequences')
     entry           = models.ForeignKey(Entry, related_name='sequences')
     
-    objects = QuerySetManager()
-        
-    class QuerySet(QuerySet):
-    
-        def with_polymorphism(self, p):
-            if not isinstance(p, Polymorphism):
-                raise TypeError, "argument must be a Polymorphism instance"
-            if p.id is None:
-                try:
-                    p = Polymorphism.objects.get({'position'  :p.position, 
-                                                  'insert'    :p.insert,
-                                                  'value'     :p.value,
-                                                  'reference' :p.reference})
-                except ObjectDoesNotExist:
-                    # if polymorphism is not in the db, exclude everything
-                    # if the polymorphism is not in the db, no sequence has it
-                    return self.none()
-            return self.filter(polymorphisms__id = p.id)
-
-        def not_polymorphism(self, p):
-            if not isinstance(p, Polymorphism):
-                raise TypeError, "argument must be a Polymorphism instance"
-            if p.id is None:
-                try:
-                    p = Polymorphism.objects.get({'position'  :p.position, 
-                                                  'insert'    :p.insert,
-                                                  'value'     :p.value,
-                                                  'reference' :p.reference})
-                except ObjectDoesNotExist:
-                    # if polymorphism is not in the db, just return the entering QuerySet
-                    # if the polymorphism is not in the db, no sequence has it
-                    return self
-            return self.exclude(polymorphisms__id = p.id)
-
-        def in_range(self, start, end):
-            if not all([isinstance(start, IntType), isinstance(end, IntType)]):
-                raise TypeError, "both arguments must be integers"
-            return self.filter(start__lte=start).filter(end__gte=end).distinct()
-
     def __unicode__(self):
         return "%s:%i-%i:%s" % (self.chromosome, self.start, self.end, self.value[:10])
         

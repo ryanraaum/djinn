@@ -55,39 +55,55 @@ class EntryQueriesTestCase(unittest.TestCase):
         self.c.polymorphisms = [self.p2, self.p4]
         self.d.polymorphisms = [self.p1]
 
-    def testWithPolymorphism(self):
-        """Find all entries having polymorphism X"""
-        result = Entry.objects.with_polymorphism(self.p2)
+    def testWithPolymorphisms(self):
+        # Find all entries having polymorphism X
+        result = Entry.objects.with_polymorphisms(self.p2)
         self.assert_(self.e_b in result)
         self.assert_(self.e_c in result)
 
-        #new_poly = Polymorphism(position=1, insert=0, value='G', reference='A')
-        #result = Entry.objects.with_polymorphism(new_poly)
-        #self.assert_(self.e_d in result)
+        # Same as above, but with a de-novo declaration of poly X
+        new_poly = Polymorphism(position=1, insert=0, value='G', reference='A')
+        result = Entry.objects.with_polymorphisms(new_poly)
+        self.assert_(self.e_d in result)
+
+        # make sure the de-novo declaration above did not actually create
+        # a new polymorphism in the database (should not have)
+        # (there should be one matching those characteristics to start)
+        count = Polymorphism.objects.filter(position=1, insert=0, value='G', reference='A').count()
+        self.assertEquals(count, 1)
 
     def testNotPolymorphism(self):
-        """Find all entries having polymorphism X but not polymorphism Y"""
-        result = Entry.objects.with_polymorphism(self.p2).not_polymorphism(self.p4)
+        # Find all entries having polymorphism X but not polymorphism Y
+        result = Entry.objects.with_polymorphisms(self.p2).not_polymorphisms(self.p4)
         self.assert_(self.e_b in result)
         self.assert_(self.e_c not in result)
 
+        # Find all entries with neither X nor Y
+        result = Entry.objects.not_polymorphisms([self.p3, self.p4])
+        self.assertEquals(len(result), 2)
+        self.assert_(self.e_a in result)
+        self.assert_(self.e_b not in result)
+        self.assert_(self.e_c not in result)
+        self.assert_(self.e_d in result)
+
     def testWithOnlyPolymorphisms(self):
-        """Find all entries having only polymorphism X"""
+        # Find all entries having only polymorphism X
         result = Entry.objects.only_polymorphisms(self.p2)
         self.assertEquals(len(result), 0, result)
 
-        result = Entry.objects.only_polymorphisms([self.p2, self.p3])
-        self.assertEquals(len(result), 1)
-        self.assert_(self.e_b in result)
-
+        # Same as above, but with de-novo declaration of poly X
         new_poly = Polymorphism(position=1, insert=0, value='G', reference='A')
         result = Entry.objects.only_polymorphisms(new_poly)
         self.assertEquals(len(result), 1)
         self.assert_(self.e_d in result)
 
+        # Find all entries having only polymorphisms X and Y
+        result = Entry.objects.only_polymorphisms([self.p2, self.p3])
+        self.assertEquals(len(result), 1)
+        self.assert_(self.e_b in result)
 
     def testInRange(self):
-        """Find all entries covering positions A-B"""
+        # Find all entries covering positions A-B
         result = Entry.objects.in_range(1,10)
         self.assert_(self.e_a in result)
         self.assert_(self.e_b in result)
@@ -95,7 +111,7 @@ class EntryQueriesTestCase(unittest.TestCase):
         self.assert_(self.e_d in result)
 
     def testMultipleInRange(self):
-        """Find all entries covering positions A-B and C-D"""
+        # Find all entries covering positions A-B and C-D
         result = Entry.objects.in_range(1,10).in_range(21,30)
         self.assert_(self.e_a not in result)
         self.assert_(self.e_b not in result)
@@ -103,8 +119,8 @@ class EntryQueriesTestCase(unittest.TestCase):
         self.assert_(self.e_d in result)
 
     def testInRangeWithPolymorphism(self):
-        """Find all entries covering positions A-B with polymorphism X"""
-        result = Entry.objects.in_range(1,15).with_polymorphism(self.p2)
+        # Find all entries covering positions A-B with polymorphism X
+        result = Entry.objects.in_range(1,15).with_polymorphisms(self.p2)
         self.assert_(self.e_b in result)
         self.assertEquals(len(result), 1)
 
