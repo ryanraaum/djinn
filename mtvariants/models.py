@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -94,6 +95,32 @@ class Entry(models.Model):
                     # if the polymorphism is not in the db, no sequence has it
                     return self.none()
             return self.filter(sequences__polymorphisms__id = p.id)
+
+        def only_polymorphism(self, p):
+            if not isinstance(p, Polymorphism):
+                raise TypeError, "argument must be a Polymorphism instance"
+            if p.id is None:
+                try:
+                    p = Polymorphism.objects.get({'position'  :p.position, 
+                                                  'insert'    :p.insert,
+                                                  'value'     :p.value,
+                                                  'reference' :p.reference})
+                except ObjectDoesNotExist:
+                    # if polymorphism is not in the db, exclude everything
+                    # if the polymorphism is not in the db, no sequence has it
+                    return self.none()
+            # all object primary id's are auto-generated and sequential,
+            # so the list of all primary keys is just 1 to total number
+            # (+1 in the python range construct)
+            other_poly_ids = list(x['id'] for x in Polymorphism.objects.values('id'))
+            # remove the id that I want
+            if p.id in other_poly_ids:
+                other_poly_ids.remove(p.id)
+
+            # first, must have the polymorphim given
+            qset = self.filter(sequences__polymorphisms__id = p.id)
+            # then exclude sequences with any other polymorphisms
+            return qset.exclude(sequences__polymorphisms__in = other_poly_ids)
 
         def not_polymorphism(self, p):
             if not isinstance(p, Polymorphism):
