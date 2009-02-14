@@ -39,6 +39,8 @@ class Polymorphism(ImmutableModel, Poly):
     value       = models.CharField(max_length=1, editable=False)
     reference   = models.CharField(max_length=1, editable=False)
     
+    objects = QuerySetManager()
+
     immutable_fields = ['position', 'insert', 'value', 'reference']
         
     def save(self, **kwargs):
@@ -72,13 +74,23 @@ class Polymorphism(ImmutableModel, Poly):
     class Meta:
         unique_together = (("position", "insert", "value", "reference"),)
 
+    class QuerySet(QuerySet):
+    
+        def in_range(self, start, end):
+            if not all([isinstance(start, IntType), isinstance(end, IntType)]):
+                raise TypeError, "both arguments must be integers"
+            return self.filter(position__gte=start).filter(position__lte=end).distinct()
+
 
 class Entry(models.Model):
     
     name = models.TextField()
     
     objects = QuerySetManager()
-        
+
+    def __unicode__(self):
+        return "%s" % self.name
+
     class QuerySet(QuerySet):
     
         @staticmethod
@@ -91,6 +103,11 @@ class Entry(models.Model):
             for p in polys:
                 if not isinstance(p, Polymorphism):
                     raise TypeError, "argument must be a Polymorphism instance"
+            # next, for any polymorphisms that did not come out of the database
+            # (i.e. no id),
+            # grab their ids if they are in the database, otherwise drop them
+            # (no point in searching the database for entries with or w/o polys
+            #  that aren't in the db to start with!)
             for p in polys:
                 if p.id is None:
                     try:
@@ -112,14 +129,22 @@ class Entry(models.Model):
             poly_ids = list(p.id for p in polys)
             return self.filter(sequences__polymorphisms__in = poly_ids)
 
-        def only_polymorphisms(self, polys):
+        def only_polymorphisms(self, polys, range_start=None, range_end=None):
             polys = self.__validate_polys__(polys)
             if len(polys) == 0:
                 return self.none()
-            # all object primary id's are auto-generated and sequential,
-            # so the list of all primary keys is just 1 to total number
-            # (+1 in the python range construct)
-            other_poly_ids = list(x['id'] for x in Polymorphism.objects.values('id'))
+            other_poly_ids = []
+            if range_start is not None and range_end is not None:
+                if range_start < range_end:
+                    other_poly_ids = list(x['id'] for x in 
+                            Polymorphism.objects.in_range(range_start, range_end).values('id'))
+                else:
+                    raise ArgumentError, "range start is not less than end"
+            else:
+                # otherwise, all object primary id's are auto-generated and sequential,
+                # so the list of all primary keys is just 1 to total number
+                # (+1 in the python range construct)
+                other_poly_ids = list(x['id'] for x in Polymorphism.objects.values('id'))
             # remove the ids that I want
             for p in polys:
                 if p.id in other_poly_ids:
@@ -142,9 +167,6 @@ class Entry(models.Model):
             if not all([isinstance(start, IntType), isinstance(end, IntType)]):
                 raise TypeError, "both arguments must be integers"
             return self.filter(sequences__start__lte=start).filter(sequences__end__gte=end).distinct()
-
-    def __unicode__(self):
-        return "%s" % self.name
 
 
 class Sequence(models.Model):

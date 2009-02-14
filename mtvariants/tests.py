@@ -102,6 +102,29 @@ class EntryQueriesTestCase(unittest.TestCase):
         self.assertEquals(len(result), 1)
         self.assert_(self.e_b in result)
 
+        # Find all entries having only polymorphisms X and Y in range A-B
+        result = Entry.objects.only_polymorphisms([self.p2, self.p3], 1, 10)
+        self.assertEquals(len(result), 1)
+        self.assert_(self.e_b in result)
+
+        # Find all entries having only polymorphisms X and Y in range A-B
+        result = Entry.objects.only_polymorphisms(self.p2, 1, 5)
+        self.assertEquals(len(result), 2)
+        self.assert_(self.e_b in result)
+        self.assert_(self.e_c in result)
+
+        # Find all entries having only polymorphisms X and Y in range A-B
+        # (here, poly p3 is outside the range, so it should be ignored)
+        result = Entry.objects.only_polymorphisms([self.p2, self.p3], 1, 5)
+        self.assertEquals(len(result), 2)
+        self.assert_(self.e_b in result)
+        self.assert_(self.e_c in result)
+
+        # Chaining should also work
+        result = Entry.objects.only_polymorphisms(self.p2, 1, 5).only_polymorphisms(self.p3, 6, 10)
+        self.assertEquals(len(result), 1)
+        self.assert_(self.e_b in result)
+
     def testInRange(self):
         # Find all entries covering positions A-B
         result = Entry.objects.in_range(1,10)
