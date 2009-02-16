@@ -1,0 +1,21 @@
+{% extends "mttransform/base_mttransform.html" %}
+
+{% block content %}
+
+<p>This site provides two web-based tools (
+<a href="{% url mttransform_seq2sites %}">seq2sites</a>
+and 
+<a href="{% url mttransform_sites2seq %}">sites2seq</a>) 
+to translate between human
+mitochondrial sequence data and variant sites relative to the revised Cambridge
+Reference Sequence (rCRS). Basic usage information is provided on the main page
+for each tool; further information is available on the <a
+    href="{% url mttransform_docs %}">documentation</a> page.</p>
+
+<h3><a href="{% url mttransform_seq2sites %}">seq2sites</a></h3>
+<p>seq2sites (sequence to sites) analyzes human mtDNA sequence data in order to determine the variant sites relative to the rCRS.</p>
+
+<h3><a href="{% url mttransform_sites2seq %}">sites2seq</a></h3>
+<p>sites2seq (sites to sequence) transforms variant sites into sequence data.</p>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'mttransform/base_mttransform.html' %}
+
+{% block content %}
+
+<pre>
+{% for result in results %}{% if result.name %}{{ result.name }},{% endif %} {{ result.value }}
+{% endfor %}
+</pre>
+
+{% endblock %}
+
