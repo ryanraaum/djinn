@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <link href="/static/css/reset.css" type="text/css" rel="stylesheet"></link>
+    <link href="/static/css/styles.css" type="text/css" rel="stylesheet"></link>
+
+    {% block jscript %}{% endblock %}
+    
+    <title>{% block title %}mtDNAresource{% endblock %}</title>
+</head>
+<body>
+
+    {% block header %}
+    <div id="header">
+    <h1>mtDNAresource</h1>
+    <hr />
+    </div>
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+
+    {% block footer %}
+    <div id="footer">
+    <hr />
+    <p>Content provided under a Creative Commons: Attribution - Share Alike License</p>
+    </div>
+    {% endblock %}
+
+</body>
+</html>
+
