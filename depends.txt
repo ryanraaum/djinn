@@ -1,0 +1,6 @@
+[mttransform]
+oldowan.mitomotifs
+oldowan.fasta
+
+[mtvariants]
+oldowan.mitomotifs
