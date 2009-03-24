@@ -4,10 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 
-from oldowan.mitomotifs import sites2seq
-from oldowan.mitomotifs import str2sites
-from oldowan.mitomotifs import seq2sites
-from oldowan.mitomotifs import sites2str
+from oldowan.mtconvert import sites2seq
+from oldowan.mtconvert import str2sites
+from oldowan.mtconvert import seq2sites
+from oldowan.mtconvert import sites2str
 from oldowan.fasta import fasta
 from oldowan.fasta import entry2str
 
