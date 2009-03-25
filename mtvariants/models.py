@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from types import IntType
 
-from oldowan.mitomotifs.polymorphism import Polymorphism as Poly
+from oldowan.polymorphism import Polymorphism as Poly
 
 
 # QuerySetManager information from http://www.djangosnippets.org/snippets/734/
