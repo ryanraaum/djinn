@@ -14,23 +14,28 @@ from oldowan.fasta import entry2str
 import re
 import os
 
-class TransformForm(forms.Form):
-    query     = forms.CharField(widget=forms.widgets.Textarea(), 
+class Seq2SitesForm(forms.Form):
+    query      = forms.CharField(widget=forms.widgets.Textarea(), 
                                 required=False)
-    file      = forms.FileField(required=False)
+    query_file = forms.FileField(required=False)
 
 def sites2seq_handler(request):
     return HttpResponse('sites2seq')
 
 def seq2sites_handler(request):
     if request.method == 'POST':
-        form = TransformForm(request.POST)
+        form = Seq2SitesForm(request.POST, request.FILES)
         if form.is_valid():
-            return process_seq2sites(form)
+            if 'query_file' in request.FILES: 
+                if request.FILES['query_file'].multiple_chunks():
+                    return HttpResponse('file is too large')
+                return process_seq2sites(request.FILES['query_file'].read())
+            else:
+                return process_seq2sites(form.cleaned_data['query'])
         else:
             return HttpResponse('form is not valid.')
     else:
-        form = TransformForm()
+        form = Seq2SitesForm()
     
     return render_to_response('mttransform/mttransform_seq2sites.html',
                               {'form': form})
@@ -39,7 +44,7 @@ def seq2sites_handler(request):
 # CONSTANTS
 #----------------------------------------------------------------------------#
 
-MAX_SEQS        = 10
+MAX_SEQS        = 100
 WRAP            = 70   # where to cut and wrap fasta output
 
 #----------------------------------------------------------------------------#
@@ -62,10 +67,9 @@ class Result(object):
 # PROCESSORS
 #----------------------------------------------------------------------------#
 
-def process_seq2sites(form):
+def process_seq2sites(content):
     """Process data submitted in seq2sites form"""
-    # get posted parameters
-    content = form.cleaned_data['query']
+    
 
     # submission validation and error reporting
     problems = []
@@ -109,25 +113,25 @@ def process_seq2sites(form):
     if format == 'fasta':
         if len(seqs) > MAX_SEQS:
                 valid = False
-                problems.append('too many sequences submitted')
+                problems.append('Too many sequences submitted; current maximum allowed is %d' % MAX_SEQS)
 
-    if not valid:
-        return (False, {'problems': problems})
+    if valid:
+        result_lines = []
+        sites_by_line = []
+        for seq in seqs:
+            try:
+                sites = seq2sites(seq)
+                sites_by_line.append(sites)
+                result_lines.append(sites2str(sites))
+            except Exception, e:
+                result_lines.append('There was an error: %s' % e)
 
-    result_lines = []
-    sites_by_line = []
-    for seq in seqs:
-        try:
-            sites = seq2sites(seq)
-            sites_by_line.append(sites)
-            result_lines.append(sites2str(sites))
-        except Exception, e:
-            result_lines.append('There was an error: %s' % e)
+        results = list(Result(x,y) for x,y in zip(names,result_lines))
 
-    results = list(Result(x,y) for x,y in zip(names,result_lines))
+        c = Context({'results': results})
+
+    else: # not valid
+        c = Context({'problems':problems})
 
     t = loader.get_template('mttransform/mttransform_sites.html')
-    c = Context({
-        'results': results,
-    })
     return HttpResponse(t.render(c))

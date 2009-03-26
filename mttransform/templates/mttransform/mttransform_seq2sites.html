@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form action="{% url mttransform_seq2sites %}" method="POST">
+<form action="{% url mttransform_seq2sites %}" method="POST" enctype="multipart/form-data">
         <span class="helparea">
 	    <div class="helpbox">
 
@@ -11,7 +11,7 @@ A single sequence may be pasted 'raw' or in
 <a href="http://en.wikipedia.org/wiki/Fasta_format" target="_blank">
 FASTA format</a>. If you submit more than one sequence, you must use
 FASTA format. (See examples below.) If you wish to submit more than 10 
-sequences, you must upload a FASTA format file.
+sequences, you should upload a FASTA format file.
 
         </div> 
         </span>
@@ -22,7 +22,7 @@ sequences, you must upload a FASTA format file.
     <div class="fieldWrapper">
         {{ form.file.errors }}
         <label for="id_file">or upload a file:</label> 
-        {{ form.file }}
+        {{ form.query_file }}
     </div>
     <p>
         <input type="submit" value="Submit" />

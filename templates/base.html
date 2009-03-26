@@ -16,6 +16,12 @@
     <hr />
     </div>
     {% endblock %}
+    
+    {% if problems %}
+    <div id="errors">
+    {% for problem in problems %}{{ problem }}{% endfor %}
+    </div>
+    {% endif %}
 
     {% block content %}{% endblock %}
 

@@ -1,6 +1,8 @@
 [mttransform]
 oldowan.mtconvert
+oldowan.polymorphism
+oldowan.mtdna
 oldowan.fasta
 
 [mtvariants]
-oldowan.mtconvert
+oldowan.polymorphism
