@@ -1,0 +1,75 @@
+{% extends "mttransform/base_mttransform.html" %}
+
+{% block content %}
+
+<form action="{% url mttransform_sites2seq %}" 
+      method="POST" 
+      enctype="multipart/form-data">
+
+    <span class="helparea">
+	    <div class="helpbox">
+
+Haplotypes or individual samples identified by polymorphic sites
+relative to the revised Cambridge Reference Sequence (rCRS) should be
+copied and pasted into the following text area or be uploaded in a text
+file. Enter separate individuals/haplotypes on separate lines. Commas (,) 
+and semi-colons (;) within the line are ok (will be ignored). 
+
+        </div> 
+    </span>
+
+    <div class="fieldWrapper">
+        {{ form.content.errors }}
+        {{ form.content }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.file.errors }}
+        <label for="id_file">or upload a file:</label> 
+        {{ form.file }}
+    </div>
+    <div class="fieldWrapper">
+      <span class="optionlist">
+        {{ form.format.errors }}
+        {{ form.format }}
+      </span>
+    </div>
+    <div class="fieldWrapper">
+      <span class="optionlist">
+        {{ form.output.errors }}
+        {{ form.output }}
+      </span>
+    </div>
+    <div class="fieldWrapper">
+        {{ form.add16k.errors }}
+        {{ form.add16k }}
+        {{ form.add16k.label }}
+    </div>
+    <p>
+        <input type="submit" value="Submit" />
+    </p>
+</form>
+
+<h2>Examples</h2>
+<p>Motif Only</p>
+<pre class="code">
+16129A 16223T
+16129A,16223T
+16129A;16223T
+</pre>
+
+<p>Name and Motif</p>
+<pre class="code">
+Ind1 16129A 16223T
+Ind2,16129A,16223T
+Ind3;16129A;16223T
+</pre>
+
+<p>Name, N, and Motif</p>
+<pre class="code">
+Ind1 1 16129A 16223T
+Ind2,2,16129A,16223T
+Ind3;3;16129A;16223T
+</pre>
+
+{% endblock %}
+

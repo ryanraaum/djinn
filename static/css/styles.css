@@ -102,3 +102,8 @@ hr {
   border: 1px dotted #ccc;
   padding: 0.5em;
 }
+
+.optionlist li {
+  list-style: none;
+}
+
