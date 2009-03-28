@@ -1,8 +1,5 @@
-DEPENDENCIES = ['oldowan.mtdna',
-                'oldowan.polymorphism',
-                'oldowan.fasta',
-                'oldowan.mtconvert',
-                'PyYAML']
+DEPENDENCIES = set(line.strip() for line in open('depends.txt', 'rU') 
+                   if not line.startswith('[') and len(line.strip()) > 1)
 
 def production():
     'Environment settings for deployment to webfaction host.'
