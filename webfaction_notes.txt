@@ -1,0 +1,6 @@
+1. The static files (djinn/static) are being served by the main apache process
+via a separate 'application' (in the webfaction control panel).
+
+2. The djinn directory (webapps/django/djinn) had to be added to the PythonPath
+webapps/django apache2 http.conf file so that the apps (mttransform, etc.) in
+the djinn directory could be loaded.

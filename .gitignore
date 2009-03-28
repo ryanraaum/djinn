@@ -2,4 +2,6 @@
 *.pyc
 *.swp
 private_settings.py
+production_settings.py
 db/development.db
+dist.zip

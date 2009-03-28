@@ -1,0 +1,28 @@
+mtDNA links
+===========
+http://www.ianlogan.co.uk/mtDNA.htm
+http://www.fidna.info/pmw/index.php?n=En.MtResources
+http://www.mitosearch.org/
+http://www.genpat.uu.se/mtDB/
+http://www.mitomap.org/
+http://www.empop.org
+http://www.hvrbase.org/ (stopped adding publications after 2006?)
+http://www.davidkfaux.org/SHETLANDmtDNADATABASES.htm
+http://www.smgf.org/pages/mtdatabase.jspx
+http://www.familytreedna.com/
+http://www.kerchner.com/cgi-kerchner/mtdna.cgi
+http://mammag.web.uci.edu/bin/view/Mitomaster/WebHome
+
+Obsolete(?) Resources
+=====================
+http://www.fbi.gov/hq/lab/fsc/backissu/april2002/miller1.htm
+
+Long Running Process Links
+==========================
+http://parand.com/say/index.php/2008/10/12/beanstalkd-python-basic-tutorial/
+http://xph.us/software/beanstalkd/
+http://code.google.com/p/pybeanstalk/
+
+Django Apps Dos and Don'ts
+==========================
+http://code.djangoproject.com/wiki/DosAndDontsForApplicationWriters

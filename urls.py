@@ -8,6 +8,8 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('',
     # Example:
     # (r'^djinn/', include('djinn.foo.urls')),
+    url(r'^$', 'django.views.generic.simple.direct_to_template', 
+        {'template':'base_index.html'}, name='base_index'),
     (r'^transform/', include('djinn.mttransform.urls'))
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 

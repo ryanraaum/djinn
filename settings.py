@@ -1,15 +1,17 @@
 import os
 import django
 # Private Django settings for djinn project.
+# environment specific settings and information that should not be
+# stored in the code repository (usernames, passwords, etc.) are kept
+# in the file private_settings.py
 import private_settings
 
 # calculated paths for django and this site
 # used as starting point for various other paths
-DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
-SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+SITE_ROOT = private_settings.SITE_ROOT
 
 # debug settings
-DEBUG = True
+DEBUG = private_settings.DEBUG
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -18,8 +20,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = os.path.join(SITE_ROOT, 'db', 'development.db') # Or path to database file if using sqlite3.
+DATABASE_ENGINE = private_settings.DATABASE_ENGINE  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = private_settings.DATABASE_NAME # Or path to database file if using sqlite3.
 DATABASE_USER = private_settings.DATABASE_USER # Not used with sqlite3.
 DATABASE_PASSWORD = private_settings.DATABASE_PASSWORD # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -85,6 +87,4 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'djinn.mtvariants',
-    'djinn.mttransform',
-)
+) + private_settings.INSTALLED_APPS
