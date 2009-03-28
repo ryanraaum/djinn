@@ -6,3 +6,11 @@ oldowan.fasta
 
 [mtvariants]
 oldowan.polymorphism
+
+[mthaplotype]
+oldowan.mitotype
+oldowan.mtconvert
+oldowan.polymorphism
+oldowan.mtdna
+oldowan.fasta
+PyYAML

@@ -1,0 +1,58 @@
+{% extends "mthaplotype/base_mthaplotype.html" %}
+
+{% block content %}
+
+<form action="{% url mthaplotype_haplotype %}" method="POST" enctype="multipart/form-data">
+        <span class="helparea">
+	    <div class="helpbox">
+
+Human mtDNA sequence(s) to be analyzed should be pasted in the text area. 
+A single sequence may be pasted 'raw' or in 
+<a href="http://en.wikipedia.org/wiki/Fasta_format" target="_blank">
+FASTA format</a>. If you submit more than one sequence, you must use
+FASTA format. (See examples below.) If you wish to submit more than 10 
+sequences, you should upload a FASTA format file.
+
+        </div> 
+        </span>
+    <div class="fieldWrapper">
+        {{ form.query.errors }}
+        {{ form.query }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.file.errors }}
+        <label for="id_file">or upload a file:</label> 
+        {{ form.file }}
+    </div>
+    <p>
+        <input type="submit" value="Submit" />
+    </p>
+</form>
+
+<h2>Examples</h2>
+<p>A single 'raw' sequence</p>
+<pre class="code">
+TTCTTTCATGGGGAAGCAGATTTGGGTACCACCCAAGTATTGACTCACCCATCAACAACC
+GCTATGTATTTCGTACATTACTGCCAGCCACCATGAATATTGTACGGTACCATAAATACT
+TGACCACCTGTAGTACATAAAAACCCAATCCACATCAAAACCCCCTCCTCATGCTTACAA
+GCAAGTACAGCAATCAACCCTCAACTATCACACATCAACTGCAACTCCAAAGTCACCCCT
+CACCCATTAGGATACCAACAAACCTACCCATCCTTAACAGTACATAGTACATAAAGCCAT
+TTACCGTACATAGCACATTACAGTCAAATCCCTTCTCGTCCC
+</pre>
+
+<p>Two sequences in FASTA format</p>
+<pre class="code">
+>Seq1
+TTCTTTCATGGGGAAGCAGATTTGGGTACCACCCAAGTATTGACTCACCCATCAACAAC
+GCTATGTATTTCGTACATTACTGCCAGCCACCATGAATATTGTACGGTACCATAAATAC
+TGACCACCTGTAGTACATAAAAACCCAATCCACATCAAAACCCCCCCCTCATGCTTACA
+GCAAGTACAGCAATCAACC
+>Seq2
+TTCTTTCATGGGGAAGCAGATTTGGGTACCACCCAAGTATTGACTCACCCATCAACAAC
+GCTATGTATCTCGTACATTACTGCCAGCCACCATGAATATTGTACAGTACCATAAATAC
+TGACCACCTGTAGTACATAAAAACCCAATCCACATCAAA-CCCCCCCCCCATGCTTACA
+GCAAGTACAGCAATCAACC
+</pre>
+
+{% endblock %}
+

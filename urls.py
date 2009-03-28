@@ -10,7 +10,8 @@ urlpatterns = patterns('',
     # (r'^djinn/', include('djinn.foo.urls')),
     url(r'^$', 'django.views.generic.simple.direct_to_template', 
         {'template':'base_index.html'}, name='base_index'),
-    (r'^transform/', include('djinn.mttransform.urls'))
+    (r'^transform/', include('djinn.mttransform.urls')),
+    (r'^haplotype/', include('djinn.mthaplotype.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
