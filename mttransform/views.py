@@ -15,34 +15,38 @@ import re
 import os
 
 class Seq2SitesForm(forms.Form):
-    query       = forms.CharField(widget=forms.widgets.Textarea(), 
+    query       = forms.CharField(widget=forms.widgets.Textarea(attrs={}), 
                                   required=False)
-    query_file  = forms.FileField(required=False)
+    file        = forms.FileField(required=False,
+                                  label='or upload a file:')
 
 class Sites2SeqForm(forms.Form):
     FORMAT_CHOICES = [('motif_only', 'Motif only'), 
                       ('name_and_motif', 'Name and Motif'), 
                       ('name_n_and_motif', 'Name, N, and Motif')]
-    OUTPUT_CHOICES = [('HVR1', 'HVR1'), 
-                      ('HVR2', 'HVR2'), 
-                      ('HVR1and2', 'HVR1 and HVR2'), 
-                      ('HVR1to2', 'HVR1 through HVR2'), 
-                      ('coding', 'Coding Region'), 
-                      ('all', 'All')]
+    OUTPUT_CHOICES = [('HVR1', 'HVR1 (positions 16024-16365)'), 
+                      ('HVR2', 'HVR2 (positions 73-340)'), 
+                      ('HVR1and2', 'HVR1 and HVR2 (positions 16023-16365 and 73-340)'), 
+                      ('HVR1to2', 'HVR1 through HVR2 (positions 16024-16569 and 1-340)'), 
+                      ('coding', 'Coding Region (positions 577-15992)'), 
+                      ('all', 'All (positions 1-16569)')]
 
     format      = forms.ChoiceField(widget=forms.widgets.RadioSelect(), 
                                     choices=FORMAT_CHOICES,
                                     required=True,
+                                    label='Input format',
                                     initial='motif_only')
     output      = forms.ChoiceField(widget=forms.widgets.RadioSelect(), 
                                     choices=OUTPUT_CHOICES,
                                     required=True,
-                                    initial='hvr1')
-    content     = forms.CharField(widget=forms.widgets.Textarea(),
+                                    label='Sequence to generate',
+                                    initial='HVR1')
+    query       = forms.CharField(widget=forms.widgets.Textarea(),
                                   required=False)
     add16k      = forms.BooleanField(label='Add 16000 to every site?', 
                                      required=False)
-    file        = forms.FileField(required=False)
+    file        = forms.FileField(required=False,
+                                  label='or upload a file:')
 
 def sites2seq_handler(request):
     if request.method == 'POST':
@@ -109,11 +113,11 @@ def process_seq2sites(form):
 
     # then check to see if a file was supplied, and if so, replace the
     # previously assumed content with the file data
-    if form.cleaned_data['query_file'] is not None:
-        if form.cleaned_data['query_file'].multiple_chunks():
+    if form.cleaned_data['file'] is not None:
+        if form.cleaned_data['file'].multiple_chunks():
             pass
             # error - return with error
-        content = form.cleaned_data['query_file'].read()
+        content = form.cleaned_data['file'].read()
 
     # clear off any trailing whitespace
     content.strip()
@@ -185,7 +189,7 @@ def process_sites2seq(form):
 
     # first, just assume whatever is in the textarea is the submission
     # even if that may be nothing
-    content = form.cleaned_data['content']
+    content = form.cleaned_data['query']
 
     # then check to see if a file was supplied, and if so, replace the
     # previously assumed content with the file data

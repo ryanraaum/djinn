@@ -21,8 +21,8 @@ sequences, you should upload a FASTA format file.
     </div>
     <div class="fieldWrapper">
         {{ form.file.errors }}
-        <label for="id_file">or upload a file:</label> 
-        {{ form.query_file }}
+        {{ form.file.label }}
+        {{ form.file }}
     </div>
     <p>
         <input type="submit" value="Submit" />
@@ -53,5 +53,23 @@ GCTATGTATCTCGTACATTACTGCCAGCCACCATGAATATTGTACAGTACCATAAATAC
 TGACCACCTGTAGTACATAAAAACCCAATCCACATCAAA-CCCCCCCCCCATGCTTACA
 GCAAGTACAGCAATCAACC
 </pre>
+
+<h2>Documentation</h2>
+<p>All letters or symbols not in the IUPAC nucleotide standard (i.e. anything
+other than A, C, G, T, U, R, Y, M, K, S, W, B, D, H, V, or N) will be deleted
+from the sequence.  This means use N instead of ? to indicate unknown
+bases.</p>
+
+<p>No more than 10 unknown sites are allowed.</p>
+
+<p>Gaps, as indicated by the '-' character, are allowed, but stripped out
+before the sequence is analyzed. That is, if you have gaps already indicated in
+your sequence, they will not cause any problems, but your placement of those
+gaps will not be used.</p>
+
+<p>Discontinuous sequence, such as HVR1 and HVR2 concatenated without the
+intervening sequence, will not work. If you have such data, you must submit the
+two sequence segments separately. If you have HVR1 through HVR2, including
+the intervening sequence, that is fine to submit.</p>
 
 {% endblock %}

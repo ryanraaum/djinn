@@ -15,7 +15,7 @@ body {
   margin: 0;
   padding: 0;
   font-weight: normal;
-  font-size: 5em;
+  font-size: 3em;
   color: #0b306e;
 }
 
@@ -45,6 +45,11 @@ div#content {
   margin: 0px;
   padding: 1em 2em;
   background: #fff;
+}
+
+div#footer {
+  font-size: 0.75em;
+  text-align: center;
 }
 
 .hidden {
@@ -113,4 +118,8 @@ h3.nestedlink a {
 .reference {
   margin-left: 2em;
   text-indent: -2em;
+}
 
+textarea#id_query {
+  width: 550px;
+}

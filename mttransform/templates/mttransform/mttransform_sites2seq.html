@@ -19,22 +19,25 @@ and semi-colons (;) within the line are ok (will be ignored).
     </span>
 
     <div class="fieldWrapper">
-        {{ form.content.errors }}
-        {{ form.content }}
+        {{ form.query.errors }}
+        {{ form.query }}
     </div>
     <div class="fieldWrapper">
         {{ form.file.errors }}
-        <label for="id_file">or upload a file:</label> 
+        {{ form.file.label }}
         {{ form.file }}
     </div>
+    <br />
     <div class="fieldWrapper">
       <span class="optionlist">
+        <span class="optiontitle">{{ form.format.label }}</span>
         {{ form.format.errors }}
         {{ form.format }}
       </span>
     </div>
     <div class="fieldWrapper">
       <span class="optionlist">
+        <span class="optiontitle">{{ form.output.label }}</span>
         {{ form.output.errors }}
         {{ form.output }}
       </span>
@@ -70,6 +73,100 @@ Ind1 1 16129A 16223T
 Ind2,2,16129A,16223T
 Ind3;3;16129A;16223T
 </pre>
+
+<h2>Documentation</h2>
+<p>Site information only (one sample/haplotype/individual per line)</p>
+<pre>
+16223T
+16223 16311
+</pre>
+
+<p>ID and site information</p>
+<pre>
+Ind1 16223T
+Ind2 16223 16311
+</pre>
+
+<p>ID, N (sample size for this ID), and site information</p>
+<pre>
+Ind1 2 16223T
+Ind2 1 16223 16311
+</pre>
+
+<p>ID, N, and individual sites may be separated by any combination of spaces,
+commas, or semi-colons. That is, all of the following are identical.</p> 
+<pre>
+Ind1 1 16129A 16223T
+Ind2,2,16129A 16223T
+Ind3;3 16129A,16223T
+</pre>
+
+<p>To retrieve the reference sequence, use 'rCRS' (or 'CRS') as the sequence
+(the resulting sequence will always be the rCRS, for both 'rCRS' and 'CRS').
+So, if you were using the name and site information input format, this might be
+something like:</p>
+<pre>
+Ind1 16223T
+Ind2 rCRS
+</pre>
+
+<p>If no nucleotide is given in the site information, it is assumed to be a
+transition. So, these two lines are equivalent.</p>
+<pre>
+16311T
+16311
+</pre>
+
+<p>Insertions may be indicated using the '.1C', 'insC', or '+C' methods. The
+'.1C' version is the prefered nomenclature and is what will be produced by the
+seq2sites tool.The following lines are all equivalent and indicate the
+insertion of a C between positions 315 and 316.</p>
+<pre>
+315.1C
+315insC
+315+C
+</pre>
+
+<p>Multiple insertions may also be indicated with any of the above methods. The
+following lines are all equivalent and indicate the insertion of 2 C's between
+positions 315 and 316.</p>
+<pre>
+315.1C 315.2C
+315insCC
+315+CC
+</pre>
+
+<p>Similarly, deletions may be indicated by '-', 'd', or 'del'. All of the
+following are equivalent.</p>
+<pre>
+204-
+204d
+204del
+204delA
+</pre>
+
+<p>The 'add 16000' option, when selected, will add 16000 to all sites. This is
+useful for polymorphic sites listings from the literature that use the HVR1
+abbreviations (i.e. 311 instead of 16311).</p>
+
+<a name="nomenclature"></a>
+<h3>Nomenclature</h3>
+
+<p>The polymorphic sites nomenclature follows the conventions established in the
+human mitochondrial sequence analysis literature (formally published by
+Carrecedo et al. 2000). These rules are most easily explained by some examples.</p>
+
+<ul>
+<li>73G: a substitution of a 'G' for the nucleotide at site 73 in the rCRS.</li>
+<li>220d: the deletion of the nucleotide at site 220 in the rCRS.</li>
+<li>315.1C: an insertion of a 'C' between sites 315 and 316 of the rCRS.</li>
+<li>315.1C, 315.2C: an insertion of two 'C's between sites 315 and 316 of the rCRS.</li>
+</ul>
+
+<p>Note: it is common for transitions (A <-> G or C <-> T) to be indicated only
+by position. Thus, the 73G polymorphism might often be seen written as 73.
+mtDNAresource utilities will accept and understand this notation, but do not
+produce it.</p>
 
 {% endblock %}
 
