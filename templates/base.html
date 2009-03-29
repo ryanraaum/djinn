@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
-    <link href="/static/css/reset.css" type="text/css" rel="stylesheet"></link>
     <link href="/static/css/styles.css" type="text/css" rel="stylesheet"></link>
 
     {% block jscript %}{% endblock %}
@@ -10,13 +9,29 @@
 </head>
 <body>
 
+  <div id="container">
+
     {% block header %}
     <div id="header">
     <h1>mtDNAresource</h1>
     <hr />
     </div>
     {% endblock %}
-    
+
+    {% block navigation %}
+    <div id="navigation">
+      <ul>
+        <li><span class="navlink"><a href="{% url base_index %}">home</a></span></li>
+        <li><span class="navlink"><a href="{% url seq2sites %}">seq2sites</a></span></li>
+        <li><span class="navlink"><a href="{% url sites2seq %}">sites2seq</a></span></li>
+        <li><span class="navlink"><a href="{% url haplotype %}">haplotype</a></span></li>
+        <li><span class="navlink"><a href="{% url contact %}">contact</a></span></li>
+      </ul>
+    </div>
+    {% endblock %}
+   
+   <div id="content">
+
     {% if problems %}
     <div id="errors">
     {% for problem in problems %}{{ problem }}{% endfor %}
@@ -25,12 +40,16 @@
 
     {% block content %}{% endblock %}
 
+   </div>
+
     {% block footer %}
     <div id="footer">
     <hr />
     <p>Content provided under a Creative Commons: Attribution - Share Alike License</p>
     </div>
     {% endblock %}
+
+  </div>
 
 </body>
 </html>

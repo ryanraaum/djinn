@@ -1,1 +1,20 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+<p>This site provides three web-based utilities (<a
+    href="{% url seq2sites %}">seq2sites</a>, <a
+    href="{% url sites2seq %}">sites2seq</a>, and <a
+    href="{% url haplotype %}">haplotype</a>) useful to studies of human mitochondrial
+DNA sequences.  </p>
+
+<h3 class="nestedlink"><a href="{% url seq2sites %}">seq2sites</a></h3>
+<p>seq2sites (sequence to sites) analyzes human mtDNA sequence data in order to determine the variant sites relative to the rCRS.</p>
+
+<h3 class="nestedlink"><a href="{% url sites2seq %}">sites2seq</a></h3>
+<p>sites2seq (sites to sequence) transforms variant sites into sequence data.</p>
+
+<h3 class="nestedlink"><a href="{% url haplotype %}">haplotype</a></h3>
+<p>haplotype compares mtDNA polymorphisms identified in sequence data to a database of haplotypes.</p>
+
+{% endblock %}
