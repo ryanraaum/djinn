@@ -1,31 +1,23 @@
 import os
 import django
-# Private Django settings for djinn project.
-# environment specific settings and information that should not be
-# stored in the code repository (usernames, passwords, etc.) are kept
-# in the file private_settings.py
-import private_settings
+import djcelery
+djcelery.setup_loader()
 
-# calculated paths for django and this site
-# used as starting point for various other paths
-SITE_ROOT = private_settings.SITE_ROOT
-
-# debug settings
-DEBUG = private_settings.DEBUG
-TEMPLATE_DEBUG = DEBUG
+try:
+    import socket
+    hostname = socket.gethostname()
+    if 'webfaction' in hostname:
+        from myproject.production_settings import *
+    else:
+        from devel_settings import *
+except ImportError, e:
+    raise e
 
 ADMINS = (
     # ('Ryan Raaum', 'djinn@raaum.org'),
 )
 
 MANAGERS = ADMINS
-
-DATABASE_ENGINE = private_settings.DATABASE_ENGINE  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = private_settings.DATABASE_NAME # Or path to database file if using sqlite3.
-DATABASE_USER = private_settings.DATABASE_USER # Not used with sqlite3.
-DATABASE_PASSWORD = private_settings.DATABASE_PASSWORD # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -44,25 +36,6 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = private_settings.SECRET_KEY
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
@@ -76,7 +49,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'djinn.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
@@ -87,4 +59,9 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-) + private_settings.INSTALLED_APPS
+    'djcelery',
+    'mttransform',
+    'mtvariants',
+    'mthaplotype',
+)
+
