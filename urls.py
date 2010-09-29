@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # (r'^djinn/', include('djinn.foo.urls')),
     url(r'^$', 'django.views.generic.simple.direct_to_template', 
         {'template':'base_index.html'}, name='base_index'),
-    url(r'^contact/$', lambda r: HttpResponseRedirect('http://www.raaum.org/contact'), name='contact'),
+    url(r'^contact/$', lambda r: HttpResponseRedirect('http://www.raaum.org'), name='contact'),
     (r'^transform/', include('djinn.mttransform.urls')),
     (r'^haplotype/', include('djinn.mthaplotype.urls')),
 
