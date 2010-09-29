@@ -14,3 +14,4 @@ oldowan.polymorphism
 oldowan.mtdna
 oldowan.fasta
 PyYAML
+django-celery
