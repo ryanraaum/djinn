@@ -125,7 +125,7 @@ def process_seq2sites(form):
     # make sure something was submitted
     if len(content) == 0:
         valid = False
-        HttpResponseRedirect(reverse('mttransform.views.seq2sites'))
+        return HttpResponseRedirect(reverse('seq2sites'))
 
     # determine format
     format = None
