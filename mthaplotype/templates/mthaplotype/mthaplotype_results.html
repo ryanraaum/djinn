@@ -2,11 +2,22 @@
 
 {% block content %}
 
+{% if not problems %}
+{% if result %}
 <pre>
-{% for result in results %}
 {{ result }}
-{% endfor %}
 </pre>
+{% else %}
+Your submission is still being processed.
+This page will automatically reload in 3 seconds, 
+or <a href="{% url hap_result id %}">reload now</a>.
+<script type="text/javascript">
+window.setTimeout(function() {
+    window.location = window.location
+}, 3000);
+</script>    
+{% endif %}
+{% endif %}
 
 {% endblock %}
 
