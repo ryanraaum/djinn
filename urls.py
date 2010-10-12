@@ -12,8 +12,8 @@ urlpatterns = patterns('',
     url(r'^$', 'django.views.generic.simple.direct_to_template', 
         {'template':'base_index.html'}, name='base_index'),
     url(r'^contact/$', lambda r: HttpResponseRedirect('http://www.raaum.org'), name='contact'),
-    (r'^transform/', include('djinn.mttransform.urls')),
-    (r'^haplotype/', include('djinn.mthaplotype.urls')),
+    (r'^transform/', include('mttransform.urls')),
+    (r'^haplotype/', include('mthaplotype.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
@@ -25,5 +25,5 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-            (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+            (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )
