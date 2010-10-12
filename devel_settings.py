@@ -1,6 +1,6 @@
 import os 
 
-SITE_ROOT = '/Users/ryan/development/djinn'
+ROOT_PATH = '/Users/ryan/development/djinn'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -20,7 +20,7 @@ BROKER_VHOST = "/"
 
 ROOT_URLCONF = 'djinn.urls'
 
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+STATIC_ROOT = os.path.join(ROOT_PATH, 'static')
 MEDIA_ROOT = ''
 MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/media/'
